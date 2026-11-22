@@ -1,17 +1,30 @@
+
+from langgraph.graph import END
 from orchestrator.state import ProjectState
 
-MAX_RETRIES = 3
+
+def decide_next(state: ProjectState):
+    if state["needs_research"]:
+        return "researcher"
+
+    return "developer"
 
 
-def review_router(state: ProjectState):
-    if not state["tests_passed"]:
-        if state["retry_count"] < MAX_RETRIES:
-            return "test_failed"
-        return "human_review"
+def decide_after_test(state: ProjectState):
+    if state["test_passed"]:
+        return "reviewer"
 
-    if not state["review_approved"]:
-        if state["retry_count"] < MAX_RETRIES:
-            return "review_rejected"
-        return "human_review"
+    if state["retry_count"] < 3:
+        return "developer"
 
-    return "human_review"
+    return "human_intervention"
+
+
+def decide_after_review(state: ProjectState):
+    if state["review_passed"]:
+        return END
+
+    if state["retry_count"] < 3:
+        return "developer"
+
+    return "human_intervention"

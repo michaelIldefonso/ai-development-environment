@@ -1,23 +1,27 @@
-from typing import TypedDict, Literal
+from typing import TypedDict
 
 
 class ProjectState(TypedDict):
-    # User input
+    # Task information
     task: str
-    mode: Literal["developer_led", "ai_assisted"]
+    requirements: str
 
-    # Worker outputs
+    # Planning and research
     plan: str
     research: str
-    code_changes: str
-    test_results: str
-    review: str
+    needs_research: bool #un needed, can be removed in future
 
-    # Workflow decisions
-    tests_passed: bool
-    review_approved: bool
-    human_approved: bool
+    # Development
+    code: str
+    human_feedback: str
 
-    # Workflow control
+    # Testing and retries
     retry_count: int
-    messages: list[str]
+    test_passed: bool
+    test_feedback: str
+
+    #review
+    review_passed: bool
+    review_feedback: str
+    # Human interaction
+    human_response: str #redundant, can be removed in future
